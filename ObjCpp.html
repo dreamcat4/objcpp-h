@@ -1,0 +1,548 @@
+<html><head><title>ObjCpp.h</title><style>
+body, table { font: 10pt Arial; } 
+pre, tt { background-color: wheat } 
+pre { border: 2px wheat outset; }
+</style>
+</head><body><!--<img src='objcpp.gif' width="400" height="80">-->
+<div style='background-color: green; border: 5px green outset;'>
+<table style='color: white; font: 30pt Arial bold;'><tr>
+<td style='border:10;'>Objcpp.h - Objective-C++ toolkit for iPhone SDK</table></div>
+<br>
+<b>objcpp.h</b> uses the ability of the Apple's Xcode gcc 4.2 compiler to 
+<a href='http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/ObjectiveC/Articles/ocCPlusPlus.html' target=_blank>mix 
+Objective-C and C++ code</a> to extend the Objective-C language.<br>
+To download the most recent version of objcpp.h and its unit tests <a href="http://objcpp.johnholdsworth.com/stable.pl">click here</a>. Documentation for all classes is available online
+<a href='ObjCpp/html/index.html' target=_blank>here</a>.<br>
+If you encounter any bugs or have any comments about the structure of the code  please let us know by email by clicking <script> document.write( "<a href='mai"+"lto:objc"+"pp@joh"+"nholdswo"+"rth.com?subject=ObjCpp'"+">here</a>" );
+</script>.
+<hr>
+<h3>Test Application Screenshots - <!--Mouse over for description, -->click to enlarge...</h3>
+
+<style> img { width: 193; } </style>
+<table width=100%><tr>
+<td align=center valign=top><a href='ObjCpp/gifs/sql1.gif' target=_blank><img 
+border=0 src='ObjCpp/gifs/sql1.gif' title=''
+></a><br>ObjSql.xcodeproj
+<td align=center valign=top><a href='ObjCpp/gifs/sql2.gif' target=_blank><img 
+border=0  src='ObjCpp/gifs/sql2.gif' title=''
+></a><br>Author table records
+<td align=center valign=top><a href='ObjCpp/gifs/sql3.gif' target=_blank><img 
+border=0  src='ObjCpp/gifs/sql3.gif' title=''
+></a><br>Picture Editor
+<td align=center valign=top><a href='ObjCpp/gifs/xml.gif' target=_blank><img 
+border=0  src='ObjCpp/gifs/xml.gif'
+ title=''></a></br>ObjXml.xcodeproj
+</table>
+<hr>
+<table cellspacing=0 cellpadding=10><tr>
+<td width='50%' valign=top>
+<b>objcpp.h</b> is a C++ header file which wraps pointers to instances of the
+core foundation classes NSArray, NSDictionary and NSString in simple C++ classes
+to facilitate the use of operator overloading. Once this has been done the
+implementation of operators such as [] for arrays (and dictionaries) and
+&quot;+&quot; for strings can be defined to extend the syntax of the Objective-C
+language.&nbsp;<p>As a convenient side effect, the assignment operator can also now be
+overloaded so objcpp.h
+can take the responsibility for managing reference counting and controlling object
+life-cycle off the programmer's hands in a manner arguably more consistent than
+the @property construct of Objective-C II and more memory efficient than the &quot;autorelease&quot;
+mechanism.</p>
+<p><b>objcpp.h</b> is implemented entirely as inline functions within the header
+file and effectively operates as a pre-processor. Therefore, all that is required to use it is to add the files objcpp.h and the
+supporting file objstr.h to your project and #import &quot;objcpp.h&quot; into
+your source. The&nbsp; last step is to change the &quot;File Type&quot; for source files that import objcpp.h
+to &quot;<i><b>sourcecode.cpp.objcpp</b></i>&quot; on the &quot;General&quot; tab of
+the &quot;Get Info&quot; inspector in Xcode. This switches the compiler to mixed
+language &quot;Objective-C++&quot; compilation.</p>
+<p>You can then make use of the C++ wrapper classes <b>OOArray</b>, <b> OODictionary</b> and
+<b>
+OOString</b> much as you would their foundation counterparts except they have a
+number of handy operators available. For example, using <b>OOString</b>:&nbsp;<pre>#import &quot;objcpp.h&quot;
+...
+    OOString str = @&quot;Hello&quot;;
+    str = str + @&quot; World&quot;;
+    NSLog( @&quot;Message: %@, length %d == %d&quot;, 
+           *str, [*str length], [str length] );</pre>
+
+<p>In objcpp the * operator is used to gain access to the Objective-C pointer wrapped by
+a class. As of gcc 4.2 (the default compiler in the iPhone 3.0 SDK), wrapped
+pointers can be messaged directly without using the * operator as a
+cast to type to the type
+&quot;id&quot; is available in the class.
+
+<p><b>OOArray</b> and <b>OODictionary</b> are C++ template classes that take
+the contained object's class as a parameter:<pre>    OOArray&lt;NSString *&gt; array;
+    array[0] = @&quot;First element&quot;;
+    array[1] = @&quot;Second element&quot;;
+    array += @&quot;Third element&quot;;</pre>
+
+The <b>OODictionary</b> class is the same but you use an object for the
+subscript which is used as the key. To cut a long story short, the way the three
+core classes fit together, subscripting can be applied recursively, OOArrays can
+be sparse and you can use OOString as the contained class so the following
+compiles and executes correctly:<pre>    OODictionary&lt;OOString&gt; dictionary;
+    dictionary[@&quot;KEY&quot;][1][@&quot;KEY&quot;] = @&quot;Hello&quot;;
+    dictionary[@&quot;KEY&quot;][1][@&quot;KEY&quot;] += @&quot; World!&quot;;</pre>
+
+<p>This recursive syntax is used in &quot;<b>objxml.h&quot;</b> when parsing and
+constructing XML messages. Also included with the <b> OOString</b> class are operators for <b> regular expressions</b>.
+For
+example: replacing any occurrences of the word &quot;Hello&quot;
+with &quot;Good-bye&quot; in a string...
+<pre>    OOString text = @&quot;Hello World&quot;;
+    text |= @&quot;/Hello/Good-bye/&quot;;</pre>
+
+<p>This is the shortest&nbsp; of introductions to objcpp.h some details of which are
+described below. Other sources of information are the HTML documentation at the
+location above and the unit tests and example iPhone application in the release 
+(as well as the source itself.)</p>
+
+<td width='50%' valign=top style='border-left: 2px inset'>
+<b>objsql.h</b>  is an Objective-C module which binds Objective-C classes
+to a sqlite3 relational database for persistent storage.
+Objects can be inserted, selected, updated and deleted by using messages. The binding of
+the instance variables of record classes to database columns and creation of the
+underlying database table is handled by the <b> objsql.mm</b> implementation - no SQL
+knowledge is required.<p>
+
+At the highest level, to use objsql.h: add it and the supporting files objcpp.h,
+objstr.h and objsql.mm to your project, create record classes and send one of the
+following messages to instances of your record classes:
+
+<pre>    [record insert];
+    [record update]; // call before updating
+    [record delete];</pre>
+
+To commit your changes to the database call <tt>[OODatabase commit]</tt> to
+perform the actual updates. The record class can be any Objective-C
+sublcass of the abstract superclass <b>OORecord</b> which implements these
+insert/update/delete methods. The supported types for instance variables are:
+
+<ul>
+<li> all the basic C types, int, char, float, double etc. and NSString *, NSData *
+<li>any type which can be archived into NSData e.g. NSArrays and NSDictionarys etc.
+<li>the <b> objcpp.h</b>  core types: OOString, OOArray and OODictionary.
+</ul>
+
+Column (instance variable) names follow the following key convention: if the instance variable
+ name begins with an upper case letter, the associated column on the database will be indexed
+and can be used in "natural joins" where the column names match from one class to another
+.
+For example two classes "Authors" and "Pictures" which share a column 
+"Author_ID" are considered to be related by a natural join. You can insert
+records for each of these classes then, for an Author record, use the
+following methods to select an Author's Picture records and select the
+Author instance associated with the first picture record:
+
+<pre>    OOArray&lt;Pictures *&gt; pics = 
+    [Pictures selectRecordsRelatedTo:authorRecord];
+        
+    OORef&lt;Authors *&gt; auth = 
+    [Authors selectRecordsRelatedTo:*pics[0]][0];</pre>
+
+Whether the join results in more than one record is not decided by the
+framework but you can place a primary key or&nbsp; other constraints by
+implementing one of the methods in the <tt>OOTableCustomization</tt> protocol in your class:
+
+<pre>@implementation Author
++ (NSString *)ooTableName { return &quot;AUTHOR_TABLE&quot;; }
++ (NSString *)ooTableKey { return @&quot;Author_ID&quot;;}
+@end</pre>
+
+The table associated with a record class and it's sqlite3 database 
+are created automatically when the class is first messaged. For more complex joins
+or views involving, for example, aggregates use the customization method <tt>+ ooTableSql</tt> to specify 
+the SQL to be used to create the view. It can then be selected into instances
+of the record class as you would a from a table. <p>
+
+Finally, any record instance can be bound user interface components using the following method:
+
+<pre>    [record bindToView:uiView delegate:self];</pre>
+
+This statement uses the integer tag number of any subviews of uiView to
+determine the instance variable of the record class (the first instance variable
+having tag number 1) associated with that view. The view's &quot;.text&quot;
+property is then updated with the value of the instance variable. This can be used for <tt>UITableViewCells</tt> or for editors/inspectors which use the delegate methods of the UI components to determine when values have
+changed. For further details take a look at the &quot;ObjSql&quot; example
+project&nbsp; for the iPhone SDK.
+
+</table>
+
+<hr>
+<table cellspacing=0 cellpadding=10><tr>
+<td width='50%' valign=top>
+<p><b>objxml.h</b> is an extension of objcpp.h to parse and construct XML messages.
+The&nbsp; messages are represented to the developer as a tree of <b>OONode</b> objects,
+one for
+each XML element&nbsp;in the document. Each <b>OONode</b> is implemented a
+subclass of <b>OODictionary&lt;OOString&gt;</b> and contains the attributes of
+the element stored under the keys &quot;<b>@attributeName</b>&quot;. Each OONode
+also has any child OONode sub-elements or OOString text in an array under the
+special key &quot;.<b>children</b>&quot;.</p>
+<p>An incoming document is parsed using the constructor or by assignment from an
+NSData object containing the xml message text.</p>
+<pre>NSData *text = [NSData dataWithContentsOfURL:aURL];
+OONode doc( text, OOXMLRecursive );
+// or
+doc = text;</pre>
+
+<p>Components of the message are then accessed using a limited version of <b>xpath</b>
+syntax and casting:</p>
+<pre>// retrieve attribute of root node
+OOString attr = doc[@&quot;element/@attribute&quot;];
+
+// retrieve root node itself
+OONode root = doc[@&quot;element&quot;];
+
+// retrieve array of all children of root
+OONodeArray children = doc[@&quot;element/*&quot;];
+
+// retrieve all &quot;item&quot; elements in doc.
+// &quot;OOXMLRecursive&quot; option required
+OONodeArray items = doc[@&quot;//item&quot;];</pre>
+
+As it is a subclass of OODictionary&lt;OOString&gt; all xpath expressions return
+a string by default which is the text value of the element's contents. Casts are
+available however to return the actual nodes. You can explicitly convert the
+return value and following are valid and equivalent:<pre>OONodeArray nodes;
+OONode node;
+nodes = doc[@&quot;element&quot;].children();
+nodes = doc[@&quot;element/*&quot;].nodes();
+node = doc[@&quot;element/child/0&quot;];
+node = doc[@&quot;element/child&quot;][0];
+node = doc[@&quot;element/child&quot;].node();
+node = doc[@&quot;element/child&quot;].node( 0 );
+node = doc[@&quot;element/child&quot;].nodes()[0];</pre>
+
+<p>This process works in reverse to construct XML documents which can then be
+converted to message text using the writeXML() method. Constructing an XML
+document is as simple as:</p>
+<pre>ONode doc;
+doc[@&quot;element/message&quot;] = @&quot;Message text.&quot;;
+doc[@&quot;element/@attr&quot;] = &quot;Attribute value&quot;;
+doc[@&quot;element/@xmlns&quot;] = &quot;http://namespaceurl&quot;;
+NSData *message = &amp;doc.writeXML( OXMLPrettyPrint );</pre>
+
+<td width='50%' valign=top style='border-left: 2px inset'>
+<h3>Contents of the Release</h3>
+<p>The release contains three Xcode projects for testing and to demonstrate the
+use of the toolkit.</p>
+<h4>ObjCpp/ObjCpp.xcodeproj</h4>
+<p>This project contains the <b>obj*.h</b> file source and unit tests to
+validate the operation of the toolkit after it has been downloaded. Build and
+run the project to see the instructions on how to use <b>objcpp.h</b> in a
+project.&nbsp;</p>
+<h4>ObjSql/ObjSql.xcodeproj</h4>
+<p><b>ObjSql</b> is an example iPhone application that demonstrates the use of
+various features of the <b>objsql.h</b> component of the toolkit. ObjSql builds
+a small sqlite3 database from text flat files and displays them as a navigation
+based iPhone application. The records in the database are fetched into instances
+of the classes defined in <b>RecordClasses.[hm]</b>. These classes have common
+instance variable names that form natural joins amongst themselves in various
+ways which are detected by the toolkit as the classes are registered.</p>
+<p>The first screen displays a list of all tables and selecting one of the
+tables displays row in that table. The cells of the UITableView are generated by
+copying a prototype view for that record class and their values populated
+automatically on the basis of the tag number of the UI component in the
+prototype. Records can be deleted using the &quot;Edit&quot; button.<br>
+<br>
+Selecting an individual record will display all tables which contains records
+which can be joined to that record and its table and selecting that table will
+show the joined records. The tables also join to themselves and if you select
+the self-join an inspector will displayed which allows you to edit the values in
+the record to demonstrate the use of the toolkit for updates.</p>
+<h4>ObjXml/ObjXml.xcodeproj</h4>
+<p>The <b>ObjXml</b> project exercises the <b>objxml.h</b> XML message parser
+displaying the top 100 new entries from the iTunes RSS feed. Data is fetched
+using code something like the following:</p>
+<pre>OOXMLSaxParser parser( OXMLRecursive );
+NSData * message = &amp;OOURL( &quot;<a href="http://url...">http://url...</a>&quot; ).data();
+parser.parse( message ):
+OONode doc = parser.rootNodeForXMLData();</pre>
+
+<p>Something different then happens. The items nodes are then selected out of
+the document as OODictionary&lt;OOString&gt; instances containing element values
+rather than OONodes using the &quot;<b>.dictionaries()</b>&quot; method. This
+allows the data to be imported onto instances of the &quot;<b>iTunesItem.[hm]</b>&quot;
+class using the <b>OOMetaData</b> class of the objsql.h toolkit and then
+automatically bound to UITableView cells using a prototype as in the ObjSql
+project.</p>
+<pre>OOStringDictionaries items = doc[@&quot;//items&quot;].dictionaries();
+OOArray&lt;iTunesItem *&gt; rows = 
+[OOMetaData import:items intoClass:[iTunesItem class]];
+// to then save to a sqlite3 database
+[OODatabase insertArray:rows];
+[OODatabase commit];</pre>
+
+</table>
+<hr>
+<table cellspacing=0 cellpadding=10><tr>
+<td width='50%' valign=top>
+<h3>Implementation</h3>
+<p>objcpp.h is based around a fourth core C++ class <b>OOReference</b> of which
+OOString, OOArray and OODictionary are subclasses. It is defined in general
+terms as follows:&nbsp;</p>
+<pre>template &lt;typename <i>ObjectClass</i>&gt;
+class OOReference {
+    <i>ObjectClass</i> *reference;
+protected:
+    <i>ObjectClass</i> *set( <i>ObjectClass</i> *newReference ) {
+        [newReference retain];
+        [reference release];
+        return reference = newReference;
+    }
+public:
+    OOReference() { 
+        reference = nil;
+    }
+    ObjectClass *operator * () const {
+        return reference;
+    }
+    ~OOReference() {
+        set( nil );
+    }
+};</pre>
+
+<p>Using this class as it's base, the <b>OOString</b> class is defined as something like the following:</p>
+<pre>class OOString : public OOReference&lt;NSMutableString&gt; {
+public:
+    OOString &amp;operator = ( const OOString &amp;str ) {
+        set( *str );
+        return *this;
+    }
+};</pre>
+
+Using this basic pattern the semantics of the objcpp classes emerge. Each class
+is a wrapper for a pointer to the underlying foundation class instance. On
+assignment the new object is retained and any previous value for
+&quot;reference&quot; is released. To gain access to the underlying object the
+operator * is used. Finally, when a variable declared as OOString goes out
+of scope, it's destructor is called and the reference is released by using the set() function to assign nil. The underlying object
+may be dealloc'd as a result depending on it's reference count.<p>It's worth digressing at this point to consider what happens when an OOString
+variable is defined as an instance variable of an Objective-C class. Since gcc
+4.2 (the default in SDK 3.0+) the option <b> &quot;-fobjc-call-cxx-cdtors&quot; </b> is turned on by default. This
+option arranges for the constructors of instance variables which are C++ classes
+to be called when the containing Objective-C class's &quot;alloc&quot; method is
+called. Likewise when dealloc is called, the destructors of any C++ class
+instance variables are themselves called. This means, if you use OOString instead of
+NSString * for an
+instance variables it's memory will automatically be recovered when an
+object is deallocated avoiding the need to take care to define a
+&quot;dealloc&quot; method to recover any retained objects.
+
+<td width='50%' valign=top style='border-left: 2px inset'>
+<h3>Subscripting</h3>
+<p>The implementation of subscripting in objcpp.h is a little more involved. If
+the goal was to have read-only access to containers <b>OOArray</b> could have
+been defined very simply as follows:</p>
+<pre>template class OOArray&lt;<i>ElementClass</i>&gt;
+class OOArray : OOReference&lt;NSMutableArray&gt; {
+public:
+    OOString &amp;operator = ( const OOArray &amp;arr ) {
+        set( *arr );
+        return *this;
+    }
+    <i>ElementClass</i> *operator [] ( int idx ) {
+        return [**this objectAtIndex:idx];
+    }
+};</pre>
+
+To allow assignment to a subscripted expression however, the result of an
+expressions array[i] needs to remember from where it was derived. To 
+capture this a transient private class <b>OOSubscript</b> is used to store this information.<pre>template class OOSubscript&lt;<i>ElementClass</i>&gt;
+class OOSubscript {
+    NSMutableArray *arr;
+    int idx;
+    OOSubscript( NSMutableArray *arr, int idx ) {
+	this-&gt;arr = arr;
+	this-&gt;idx = idx;
+    }
+    friend class OOArray&lt;ElementClass&gt;;
+public:
+    <i>ElementClass</i> *operator * () const {
+        return [arr objectAtIndex:idx];
+    }
+    OOSubscript &amp;operator = ( <i>ElementClass</i> *elm ) {
+        [arr replaceObjectAtIndex:idx withObject:elm];
+    }
+};</pre>
+
+As a result the implementation of the operator [] for OOArray is more like the
+following:<pre>    OOSubscript&lt;<i>ElementClass</i>&gt; operator [] ( int idx ) {
+        return OOSubscript&lt;<i>ElementClass</i>&gt;( **this, idx );
+    }</pre>
+
+In this way the code <tt>array[0] = @&quot;A String&quot;;</tt> is implemented. As before, the expression &quot;array[i]&quot; is an instance of a C++
+wrapper class so you can use the &quot;*&quot; operator to gain access to it's
+actual value. In objcpp.h there are four subclasses of OOSubscript. One
+each for OOArrays and OODictionarys, for subscripts of OOArrays by an NSRange()
+and one for subscripts of OODictionarys using a &quot;slice&quot; which is an
+array of keys returning an array (each of which can be assigned to.) 
+
+</table>
+
+<hr>
+<table cellspacing=0 cellpadding=10><tr>
+<td width='50%' valign=top>
+<h3>Caveats</h3>
+<p>As with any framework built on top of an existing one there are a few minor
+&quot;gotchas&quot; to look out for with using objcpp.h at the points where it
+meets conventional Objective-C programming.</p>
+<h4>Mutability</h4>
+<p>objcpp.h does all it can to make sure its contained instances are mutable.
+Normally when an assignment is made, all that happens is that the pointer is copied and a
+&quot;retain&quot; message sent. If the assignment appears to be from an
+immutable object however (such as from NSString * rather than NSMutableString *) a
+&quot;mutableCopy&quot; is taken of the entire object and the copy is retained.</p>
+<p>Also, note that in effect all objcpp.h core classes are based on the mutable
+version of their foundation counterpart. If you want to make sure an argument
+passed by reference to a function is not changed by that function use the
+&quot;const&quot; qualifier, e.g. <tt>const OOString &amp;str</tt>.</p>
+<h4>Scope and Memory Management</h4>
+<p>objcpp.h is perhaps a little too efficient at managing memory at times. Consider the
+following code:</p>
+<pre>OOString greet( const OOString &amp;who ) {
+    return OOString( @&quot;Hello &quot; )+who;
+}
+...
+    NSString *message = greet( @&quot;World&quot; );
+    NSLog( @&quot;%@&quot;, message );</pre>
+
+<p>You will find it crashes. By the time the message is printed, the
+temporary OOString instance C++ created on the stack as the return value from
+function greet() has been destroyed and its containing string will have been
+released. For this situation the &quot;&amp;&quot; operator has been overloaded
+in the OOReference class to return the underlying pointer with &quot;<b>autorelease</b>&quot;
+scope i.e.: 
+
+<pre>operator &amp; () { return [[ref retain] autorelease]; }</pre>
+
+The following code will work and the message object will be preserved for
+delayed release.
+<pre>    NSString *message = &amp;greet();
+    NSLog( @&quot;%@&quot;, message );</pre>
+
+You can use this in any situation where you need to retain a contained object a
+little longer. Think of the &quot;*&quot; operator as &quot;object pointed to
+by&quot; and the &quot;&amp;&quot; operator as &quot;take a pointer to&quot;.
+<h4>Assign of nil vs. capacity.</h4>
+<p>Unfortunately in Objective-C &quot;nil&quot; is defined as simply &quot;0&quot; and it is
+impossible to distinguish it from integers when defining constructors. As it is
+useful to have a constructor for OOArray where you can&nbsp; specify the size of
+an array as well as one which initializes it to nil a compromise had to be
+found. As a result there is a shared constructor for integer arguments. If the
+value is zero it creates an empty OOArray reference. If the integer is non-null
+it will actually allocate an array with that initial capacity. As constructors are
+implemented using the assignment operators (to keep the two consistent) this
+applies to assignment as well. A necessary evil alas. If in doubt you could look at using the &quot;~&quot; operator to destroy a variable
+(or subscripted
+reference) rather than assign &quot;nil&quot;.</p>
+<h4>Strings</h4>
+<p>You will find that in many places you can use C-style &quot;strings&quot; as
+well as Objective-C style @&quot;strings&quot; work where an OOString is
+expected. This is due to there being a constructor to convert from one to the
+other. You may even find that there are places where C-style strings seem to work
+better than Obj-C style @strings. This is because the expression&nbsp; <tt>@&quot;a
+string&quot;</tt> has neither class NSString nor NSMutableString or even NCFString
+and as a result can lead to compilation errors due to ambiguous overloading.&nbsp;If you encounter
+problems use a C-Style &quot;string&quot; as it is less ambiguous.</p>
+<h4>Debugging</h4>
+<p>While on the whole use of objcpp.h does not affect the Xcode environment the
+debugger &quot;gdb&quot; does not support inlined functions well when setting
+breakpoints and single stepping. In order to get around this: #define the
+preprocessor symbol &quot;<b>OODEBUG</b>&quot; in your source before objcpp.h is
+#imported or as a build parameter in Xcode and objcpp.h will be built without inlining
+functions. It can then be debugged as you would any other program. The last issue
+worth mentioning is that for some reason OOArrays and OODictionarys always
+display as being empty in the debugger. To work around this type &quot;po
+array.ref&quot; or po &quot;dictionary.ref&quot; at the console to view their
+contents.</p>
+
+<td width='50%' valign=top style='border-left: 2px inset'>
+<h3>Common Idioms</h3>
+<p>Having opened the door to operator overloading through the use of C++ the
+risk is great of descending into the depths of &quot;operator oriented&quot;
+programming where code is &quot;write only&quot; as is best exemplified by a
+language such as Perl which has an excessively rich syntax. There are a large
+number of operators defined in objcpp.h but used in moderation the common
+operators will not result in a reduction in the comprehensibility of code when
+compared to their at-times very verbose alternatives in Objective-C.</p>
+<p>Examples of common code idioms you might expect to use without compromising
+maintainability are given below:</p>
+
+<pre>
+// String concatenation (init from C-string is OK)
+OOString string1 = @&quot;Hello&quot;, string2 = &quot;World&quot;;
+OOString greeting = string1+&quot; &quot;+string2;
+
+// subscript into string
+unichar character2 = greeting[1];
+greeting[1] = 'a';
+
+// String comparison
+if ( greeting == &quot;Hallo World&quot; )
+    // do something
+
+// Pattern replace
+greeting |= @&quot;/Hallo/Good-bye/&quot;;
+
+// Pattern match
+OOStringArray words = greeting &amp; @&quot;\\w+&quot;;
+
+// Split string dividing by separator
+OOStringArray words = greeting / @&quot; &quot;;
+
+// Join string back together (obscure)
+OOString greeting = words / @&quot; &quot;;
+
+// Sort an array
+OOStringArray sorted = +words;
+
+// destroy variable (assign to nil)
+~greeting;
+
+// Array initialization from C-string
+OOArray&lt;OOString&gt; array1 = &quot;1 2 3&quot;, array2 = &quot;3 4 5&quot;;
+
+// set operators (OOStringArray is a synonym)
+OOStringArray union = array | array2;
+OOStringArray intersection = array1 &amp; array2;
+
+// add to array
+array1 += &quot;4&quot;;
+array1 += array2
+
+// dictionary operators (can also init from C-string)
+OODictionary&lt;OOString&gt; dict = &quot;a 1 b 2 c 3&quot;;
+dict[@&quot;d&quot;] = &quot;Hello&quot;;
+dict[@&quot;d&quot;] += &quot; &quot;;
+
+// more efficient (*dict[@&quot;d&quot;] is an OOString object)
+*dict[@&quot;d&quot;] += &quot;World&quot;;
+
+// delete dictionary key
+~dict[@&quot;d&quot;];
+
+// recursive subscripting (sparse arrays are padded out)
+dict[@&quot;e&quot;][1] = &quot;One&quot;;
+dict[@&quot;e&quot;][2] = &quot;Two&quot;;
+
+/*** objsql.h examples ***/
+
+// create and initialize record
+Author *author = [[Author alloc] init];
+author-&gt;Au_id = &quot;123-456-789&quot;;
+author-&gt;au_fname = &quot;John&quot;;
+author-&gt;au_lname = &quot;Brown&quot;;
+
+// insert into database
+[author insert];
+[OODatabase commit];
+
+// update record
+[author update]; // send before updating record
+author-&gt;au_fname = &quot;Jean&quot;;
+[OODatabase commit];
+[author release];</pre>
+
+</table><hr><script src='index.pl'></script>

@@ -1,0 +1,35 @@
+
+= Objcpp.h - Objective-C++ toolkit for iPhone SDK
+
+Copyright 2009 John Holdsworth.
+
+For bugs or ommisions please email objcpp@johnholdsworth.com
+
+Home page for updates and docs: http://objcpp.johnholdsworth.com
+
+DoxyGen: http://objcpp.johnholdsworth.com/ObjCpp/html/index.html
+
+Forum for support: http://n2.nabble.com/Objcpp-Q-A-f2626793.html 
+
+You may make commercial use of this source in applications without
+charge but not sell it as source nor can you remove this notice from
+this source if you redistribute. You can make any changes you like
+to this code before redistribution but please annotate them below.
+
+If you find it useful please send a donation via paypal to account
+objcpp@johnholdsworth.com. Thanks.
+
+=== Other iPhone-C++ Related
+
+http://www.iphonedevsdk.com/forum/iphone-sdk-development/16077-role-c-objective-c-development.html
+
+http://cplus.about.com/b/2009/01/11/the-biggest-iphone-development-surprise-yet-c.htm
+
+http://www.ignaciosanchezgines.com/2009/08/27/iphone-and-c-opengl-programming/
+
+http://iphonedevelopertips.com/cpp/c-on-iphone-part-1.html
+
+http://iphonedevelopertips.com/objective-c/c-on-iphone-part-2-exceptions.html
+
+http://unlogica.com/blog/2008/04/making_c_and_objective_c_play.html
+

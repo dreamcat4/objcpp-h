@@ -1,0 +1,19 @@
+//
+// Prefix header for all source files of the 'ObjCpp' target in the 'ObjCpp' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
+
+#ifndef OODEBUG
+#ifdef __cplusplus
+	// only for unit tests
+	#define OOTrace OOVerify
+	void OOVerify( NSString *fmt, ... );
+
+	#import "objcpp.h"
+    #import "objsql.h"
+	#import "objxml.h"
+#endif
+#endif

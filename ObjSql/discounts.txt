@@ -1,0 +1,4 @@
+Initial Customer~~~~10.5
+Volume Discount~~100~1000~6.7000000000000002
+Huge Volume Discount~~1001~~10.0
+Customer Discount~8042~~~5.0

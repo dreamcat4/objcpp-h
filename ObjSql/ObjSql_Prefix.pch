@@ -1,0 +1,13 @@
+//
+// Prefix header for all source files of the 'ObjSql' target in the 'ObjSql' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <UIKit/UIKit.h>
+#endif
+
+#ifdef __cplusplus
+	#import "objcpp.h"
+	#import "objsql.h"
+#endif
